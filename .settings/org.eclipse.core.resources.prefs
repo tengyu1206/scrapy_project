@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//core/helpers/time_util.py=utf-8
+encoding//spider/items.py=utf-8
+encoding//spider/pipelines.py=utf-8
+encoding//spider/settings.py=utf-8
+encoding//spider/spiders/fang_community.py=utf-8
+encoding//spider/spiders/rong360.py=utf-8
+encoding/<project>=UTF-8

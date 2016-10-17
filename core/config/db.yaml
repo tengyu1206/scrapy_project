@@ -1,0 +1,10 @@
+#house:
+#    host: 10.2.9.12
+#    user: crawl
+#    passwd: 'crawl'
+#    db: house
+house:
+    host: 127.0.0.1
+    user: root
+    passwd: '123456'
+    db: house
