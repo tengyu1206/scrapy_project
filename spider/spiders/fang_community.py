@@ -40,6 +40,7 @@ class Fang_community_Spider(scrapy.Spider):
             #index = "http://esf.fang.com/housing/"
             request = scrapy.Request(index,callback=self.parse_fang_page_data)
             request.meta['cityName'] = cityName
+            #time.sleep(5)
             time.sleep(random.randint(1, 3))
             yield request
 
@@ -57,6 +58,7 @@ class Fang_community_Spider(scrapy.Spider):
             request = scrapy.Request(url,callback=self.parse_fang_communityurl_data)
             request.meta['cityName'] = response.meta['cityName']
             time.sleep(random.randint(1, 3))
+            #time.sleep(5)
             #print response.meta['cityName']
             yield request
         
@@ -70,12 +72,14 @@ class Fang_community_Spider(scrapy.Spider):
             communityUrl = community.xpath('@href').extract()[0]
             #communityUrl = "http://270783.fang.com/"
             #print "小区url:",communityUrl
-            request = scrapy.Request(communityUrl,callback=self.parse_fang_community_data)
-            request.meta['cityName'] = response.meta['cityName']
-            request.meta['communityName'] = communityName
-            time.sleep(random.randint(1, 3))
-            yield request
-            
+            if "http" in communityUrl:
+                request = scrapy.Request(communityUrl,callback=self.parse_fang_community_data)
+                request.meta['cityName'] = response.meta['cityName']
+                request.meta['communityName'] = communityName
+                time.sleep(random.randint(1, 3))
+                #time.sleep(5)
+                yield request
+                            
         
     def parse_fang_community_data(self, response):
         item = FangCommunityItem()
