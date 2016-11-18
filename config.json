@@ -7,6 +7,18 @@
     "updateFangCommunity": {
       "hour": 17,
       "minute": 14
+    },
+    "updateNewHouse": {
+      "hour": 18,
+      "minute": 14
+    },
+    "updateNewHouseDetail": {
+      "hour": 19,
+      "minute": 14
+    },
+    "updateNewHouseDynamic": {
+      "hour": 20,
+      "minute": 14
     }
   }
 }

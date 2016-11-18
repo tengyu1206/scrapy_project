@@ -18,7 +18,8 @@ class Base(object):
         cnn = self._cnn
         if sql == None:
             sql = """SELECT * FROM %s"""%(self._tableName)
-        result = cnn.select(sql,kind='pandas')#获取pandas格式的数据
+        #result = cnn.select(sql,kind='pandas')#获取pandas格式的数据
+        result = cnn.select(sql)
         return result
 
     def insertData(self,data,if_exists='append',chunksize=None):
@@ -26,3 +27,7 @@ class Base(object):
         """
         cnn = self._cnn
         cnn.insert(data,table=self._tableName,kind='pandas',if_exists=if_exists,chunksize=chunksize)#将历史数据插入到数据库中
+    
+    def updateData(self,data,sql,chunksize=None):
+        cnn = self._cnn
+        cnn.update(data, sql, table=self._tableName, chunksize=chunksize)

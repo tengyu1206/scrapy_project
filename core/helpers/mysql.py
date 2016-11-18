@@ -27,6 +27,7 @@ class Connection(object):
 			else:
 				cur=conn.cursor()
 				cur.executemany(sql,data)
+				#cur.execute(sql,data)
 				conn.commit()
 				cur.close()
 				conn.close()
@@ -45,5 +46,22 @@ class Connection(object):
 				cur.execute(sql)#执行SQL语句
 				results = cur.fetchall()#获取所有记录的列表
 				return results
+		except MySQLdb.Error,e:
+			print "Mysql Error %d: %s" % (e.args[0], e.args[1])
+			
+	def update(self,data,sql=None,table=None,kind=None,if_exists='append',flavor='mysql',chunksize=None):
+		conn = self.conn
+		try:
+			if kind == 'pandas' and table:
+				data.to_sql(con=conn,name=table,index=False,if_exists=if_exists,flavor=flavor,chunksize=chunksize)#将pandas格式的数据插入到数据库中
+				print '数据插入成功'
+			else:
+				cur=conn.cursor()
+				#cur.executemany(sql,data)
+				cur.execute(sql,data)
+				conn.commit()
+				#cur.close()
+				#conn.close()
+				print "数据插入成功"
 		except MySQLdb.Error,e:
 			print "Mysql Error %d: %s" % (e.args[0], e.args[1])

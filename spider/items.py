@@ -77,5 +77,73 @@ class FangCommunityItem(scrapy.Item):
     #插入时间
     inserttime = scrapy.Field()
     
+class FangCommunityPriceItem(scrapy.Item):
+    community_id = scrapy.Field()
+    avgPrice = scrapy.Field()    
+    inserttime = scrapy.Field()
     
+class FangNewhouseStaticItem(scrapy.Item):
+    #newhouse_id = scrapy.Field()
+    newhouse_name = scrapy.Field()
+    city = scrapy.Field()   
+    url =  scrapy.Field()  
+    region = scrapy.Field()  
+    #状态 在售还是待售
+    state = scrapy.Field()
+    #inserttime = scrapy.Field()
+    
+class FangNewhouseItem(scrapy.Item):
+    #newhouse_id = scrapy.Field()
+    url =  scrapy.Field() 
+    #建筑类型
+    type = scrapy.Field()
+    #楼盘地址
+    houseAddress = scrapy.Field()
+    #开发商
+    developers = scrapy.Field()
+    #产权年限
+    year = scrapy.Field()
+    #装修情况
+    decoration = scrapy.Field()
+    #小区规划建筑面积
+    structure_area = scrapy.Field()
+    #占地面积
+    floor_area = scrapy.Field()
+    #容积率
+    plot_ratio = scrapy.Field()
+    #绿化率
+    green_rate = scrapy.Field()
+    #楼栋总数
+    building_num = scrapy.Field()
+    #总户数
+    household_num = scrapy.Field()
+    #物业费
+    property_fee = scrapy.Field()
+    #物业公司
+    property_company = scrapy.Field()
+    #楼层状况
+    floor = scrapy.Field()
+    #数据版本
+    data_version = scrapy.Field()
+    
+    
+    
+    
+    
+class FangNewhouseDynamicItem(scrapy.Item):
+
+    avgPrice = scrapy.Field()
+    #最新开盘时间
+    openDate = scrapy.Field()
+    #交房时间
+    deliverDate = scrapy.Field()
+    #出租均价
+    rentPrice = scrapy.Field()
+    inserttime = scrapy.Field()
+    url = scrapy.Field()
+    status = scrapy.Field()
+    newhouse_name = scrapy.Field()
+    developer = scrapy.Field()
+    city = scrapy.Field()
+    data_version = scrapy.Field()
     

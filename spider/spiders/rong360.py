@@ -26,6 +26,16 @@ class Rong360Spider(scrapy.Spider):
     start_urls = (
         'http://www.rong360.com/cityNavi.html',
     )
+    
+    headers = {
+      "Host":"www.rong360.com",
+      "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Language":"zh-CN,zh;q=0.8",
+      "Accept-Encoding":"gzip, deflate, sdch",
+      "Referer":"http://www.rong360.com/cityNavi.html",
+      "Cookie":"RONGID=98bce24c6c50b511866948123647cab3; abclass=1472522553_2; __gads=ID=aae9b6621a6a77fc:T=1473305032:S=ALNI_MaM9vswS8M2s1eg-K_EjvQnaANk9Q; __jsluid=d5b09162fbc15a5c95cce8d00964a7c8; gr_user_id=694a3290-4c9d-449c-a725-32ba011f85b9; __utmz=1478582545.utmcsr=(direct)|utmcmd=(direct); PHPSESSID=ud9fvs500qcko71mai73vcg787",
+      "Connection":"keep-alive"
+    }
 
     def parse(self, response):
         href = "http://www.rong360.com/"
@@ -36,17 +46,17 @@ class Rong360Spider(scrapy.Spider):
             domain = city.xpath('@domain').extract()[0]
             cityName = city.xpath('span/text()').extract()[0]
             index = href+domain+condif
-            request = scrapy.Request(index,callback=self.parse_rong360_data)
+            request = scrapy.Request(index,headers=self.headers,callback=self.parse_rong360_data)
             request.meta['domain'] = domain
             request.meta['cityName'] = cityName
-            time.sleep(random.randint(1, 3))
+            time.sleep(random.randint(1, 5))
             yield request
 
     def parse_rong360_data(self, response):
         item = Rong360Item()
         sel = Selector(response)
         #productList = sel.xpath('//ul[@id="product_list"]')
-        print response.url
+        #print "url:",response.url
         productList = sel.xpath('//div[@class="product_info fl"]')
         if len(productList) != 0:
             #print response.url,response.meta['domain'],response.meta['cityName']
@@ -115,7 +125,11 @@ class Rong360Spider(scrapy.Spider):
                                 discount = discount/10
                         rate = float(re.findall(r'(\d+\.\d+)?%',r[1])[0])#提取百分数
                         first_pay = feature.xpath('span[@class="first_pay"]/text()').extract()[0]
-                        fp = int(filter(str.isdigit, first_pay.encode('utf-8')))# fp 付款比例
+                        fp = 0
+                        if(first_pay != "首付成起"):
+                            fp = int(filter(str.isdigit, first_pay.encode('utf-8')))# fp 付款比例
+                            
+                        
 
                         if(mark == "house_type1"):
                             item["type1_discount"] = discount

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-  融360网页爬取解析,爬取融360所有城市地址,
-  根据城市URL抓去各城市各银行的贷款利率
+  搜房网小区基本信息
 '''
 import scrapy
 from scrapy.selector import Selector
@@ -28,7 +27,6 @@ class Fang_community_Spider(scrapy.Spider):
     )
 
     def parse(self, response):
-        #href = "http://www.rong360.com/"
         condif="/housing/"
         sel = Selector(response)
         cityList = sel.xpath('//div[@class="outCont"]//a')
@@ -36,49 +34,48 @@ class Fang_community_Spider(scrapy.Spider):
             domain = city.xpath('@href').extract()[0]
             index = domain+condif
             cityName = city.xpath('text()').extract()[0]
-            #print "cityName:",cityName            
-            #index = "http://esf.fang.com/housing/"
             request = scrapy.Request(index,callback=self.parse_fang_page_data)
-            request.meta['cityName'] = cityName
-            #time.sleep(5)
-            time.sleep(random.randint(1, 3))
+            request.meta['cityName'] = cityName            
+            #time.sleep(random.randint(1, 10))
+            time.sleep(5)
             yield request
+
+                
+            
 
     def parse_fang_page_data(self, response):
         sel = Selector(response)
-        #print response.url
+        print response.url
         urlpattern = response.url + "__0_0_0_0_pageindex_0_0"
-        #print sel.xpath('//span[@class="txt"]/text()').extract()[0]
-        totle_page = sel.xpath('//span[@class="txt"]/text()').extract()[0][1:-1]
+        print sel.xpath('//span[@class="txt"]/text()').extract()[0]
+        total_page = sel.xpath('//span[@class="txt"]/text()').extract()[0][1:-1]
         pageindex = 1
-        while pageindex <= int(totle_page):
+        #total_page = 1  #测试使用
+        while pageindex <= int(total_page):
             url=urlpattern.replace('pageindex',str(pageindex))
-            #print url
             pageindex = pageindex + 1
             request = scrapy.Request(url,callback=self.parse_fang_communityurl_data)
             request.meta['cityName'] = response.meta['cityName']
-            time.sleep(random.randint(1, 3))
-            #time.sleep(5)
-            #print response.meta['cityName']
+            #time.sleep(random.randint(1, 3)) 
+            time.sleep(6)           
             yield request
         
     def parse_fang_communityurl_data(self, response):
-        #print response.url
+        print response.url
+        print "fengle"
         sel = Selector(response)
         communityList = sel.xpath('//a[@class="plotTit"]')
         for community in communityList:
             communityName = community.xpath('text()').extract()[0]
-            #print "小区名字:",communityName
             communityUrl = community.xpath('@href').extract()[0]
-            #communityUrl = "http://270783.fang.com/"
-            #print "小区url:",communityUrl
             if "http" in communityUrl:
                 request = scrapy.Request(communityUrl,callback=self.parse_fang_community_data)
                 request.meta['cityName'] = response.meta['cityName']
                 request.meta['communityName'] = communityName
-                time.sleep(random.randint(1, 3))
-                #time.sleep(5)
+                #time.sleep(random.randint(1, 3))  
+                time.sleep(15)              
                 yield request
+                
                             
         
     def parse_fang_community_data(self, response):
@@ -99,17 +96,15 @@ class Fang_community_Spider(scrapy.Spider):
         today = tu.todaystr()
         url = url.encode('utf-8')
         communityName = communityName.encode('utf-8')
-        rid = url+communityName+today
+        rid = url+communityName
         rid = util.md5(rid)
         print "rid:",rid
         item["rid"] = rid
         
         sel = Selector(response)
-        #aliasName = ""
         aliasName = sel.xpath('//span[@class="con_max"]/text()').extract()
         if len(aliasName) != 0:
             aliasName = aliasName[0][3:]
-            #print "小区别名:",aliasName[0][3:]
         else:
             aliasName = None
         print "小区别名:",aliasName 
@@ -128,7 +123,6 @@ class Fang_community_Spider(scrapy.Spider):
         if len(communityInfoList) != 0 :
             for info in communityInfoList:
                 infoname = info.xpath('strong/text()').extract()[0]
-                #print "infoname:",infoname
                 infoContent = None
                 if len(info.xpath('text()')) != 0:
                     infoContent = info.xpath('text()').extract()[0]               
@@ -150,7 +144,6 @@ class Fang_community_Spider(scrapy.Spider):
                     item["developers"] = infoContent
         
         otherInfoList = sel.xpath('//div[@class="plptinfo_tip"]/ul/li')
-        #print otherInfoList
         if len(otherInfoList) != 0:
             otherinfo = otherInfoList[0] 
             avgPrice = otherinfo.xpath('//strong[@class="red"]/text()').extract()[0]

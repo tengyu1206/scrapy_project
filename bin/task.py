@@ -30,6 +30,27 @@ def updateFangCommunity():
     更新搜房网小区数据
     """
     os.system('scrapy crawl fang_community')#执行爬虫命令
+    
+@scheduler.scheduled_job("cron", hour=config['task']['updateNewHouse']['hour'],minute=config['task']['updateNewHouse']['minute'])
+def updateNewHouse():
+    """
+    更新搜房网新房初始数据
+    """
+    os.system('scrapy crawl fang_newhouse')#执行爬虫命令
+    
+@scheduler.scheduled_job("cron", hour=config['task']['updateNewHouseDetail']['hour'],minute=config['task']['updateNewHouseDetail']['minute'])
+def updateNewHouseDetail():
+    """
+    更新搜房网新房静态特征数据
+    """
+    os.system('scrapy crawl fang_communityDetail')#执行爬虫命令
+    
+@scheduler.scheduled_job("cron", hour=config['task']['updateNewHouseDynamic']['hour'],minute=config['task']['updateNewHouseDynamic']['minute'])
+def updateNewHouseDynamic():
+    """
+    更新搜房网新房动态特征数据
+    """
+    os.system('scrapy crawl fang_newhouseDynamic')#执行爬虫命令
 
 
 
